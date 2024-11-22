@@ -1,0 +1,39 @@
+.container {
+    background-color: white;
+    // width: 100%;
+    margin-top: 30px !important;
+    box-shadow: 6px 3px 3px rgb(70, 70, 70);
+}
+
+.button {
+    display: flex;
+    justify-content: end;
+    margin-right: 30px;
+    margin-bottom: 10px;
+    
+    &-style {
+        background-color: green;
+        width: 100px;
+    }
+}
+
+.title {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.users-form {
+   padding: 30px;
+   display: flex;
+   justify-content: space-around;
+}
+
+.card {
+    background-color: rgb(214, 225, 245);
+    cursor: pointer;
+}
+
+.cardSelected {
+    background-color: rgb(161, 172, 189);
+    cursor: pointer;
+}

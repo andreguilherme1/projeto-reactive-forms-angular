@@ -1,0 +1,402 @@
+<div class="container">
+  <div class="users-form">
+    <div class="card" style="width: 18rem" *ngFor="let user of usersList; let i = index" (click)="getUserSelected(i)" [ngClass]="selectColor(i)">
+      <div class="card-body">
+        <h5 class="card-title">{{ user.name }}</h5>
+        <h6 class="card-subtitle mb-2 text-body-secondary">{{ user.email }}</h6>
+      </div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="!isEditable && hasUserSelected">
+    <div class="button"><button mat-flat-button class="button-style" style="background-color: rgb(247, 178, 76);" (click)="this.isEditable = true">Editar</button></div>
+
+    <mat-stepper #stepper>
+      <mat-step >
+        <form [formGroup]="userForm" class="mt-2">
+          <ng-template matStepLabel>Geral</ng-template>
+          <div class="row m-2">
+            <div class="col-12 col-md-6">
+              <p class="title">Nome:</p>
+              <p>{{ userSelected.name }}</p>
+            </div>
+            <div class="col-12 col-md-6">
+              <p class="title">E-Mail:</p>
+              <p>{{ userSelected.email }}</p>
+            </div>
+          </div>
+
+          <div class="row m-2">
+            <div class="col-12 col-md-6">
+              <p class="title">País:</p>
+              <p>{{ userSelected.country }}</p>
+            </div>
+            <div class="col-12 col-md-6">
+              <p class="title">Estado:</p>
+              <p>{{ userSelected.state }}</p>
+            </div>
+          </div>
+
+          <div class="row m-2">
+            <div class="col-12 col-md-4">
+              <p class="title">Estado civíl:</p>
+              <p>{{ userSelected.maritalStatus | martialStatus }}</p>
+            </div>
+            <div class="col-12 col-md-4">
+              <p class="title">Renda mensal:</p>
+              <p>{{ userSelected.monthlyIncome | currency:'BRL' }}</p>
+            </div>
+            <div class="col-12 col-md-4">
+              <p class="title">Data de nascimento:</p>
+              <p>{{ userSelected.birthDate }}</p>
+            </div>
+          </div>
+        </form>
+      </mat-step>
+
+      <mat-step label="Contato">
+        <form [formGroup]="userForm">
+          <h4>Telefones:</h4>
+          <div class="row m-2">
+            <div class="col-12 col-md-4" *ngFor="let phone of userSelected.phoneList">
+              <p class="title">{{ phone.type | phoneType | verifyString }}</p>
+              <p>{{ phone.internationalCode }} {{ '('+ phone.areaCode +')'}} {{ phone.number }}</p>
+            </div>
+          </div>
+
+          <h4>Endereços:</h4>
+          <div class="row m-2" *ngFor="let adress of userSelected.addressList">
+            <div class="col-6 col-md-2">
+              <p class="title">Tipo:</p>
+              <p>{{ adress.type | adressType }}</p>
+            </div>
+            <div class="col-6 col-md-2">
+              <p class="title">Rua:</p>
+              <p>{{ adress.street }}</p>
+            </div>
+            <div class="col-6 col-md-2">
+              <p class="title">Complemento:</p>
+              <p>{{ adress.complement }}</p>
+            </div>
+            <div class="col-6 col-md-2">
+              <p class="title">País:</p>
+              <p>{{ adress.country }}</p>
+            </div>
+            <div class="col-6 col-md-2">
+              <p class="title">Estado:</p>
+              <p>{{ adress.state }}</p>
+            </div>
+            <div class="col-6 col-md-2">
+              <p class="title">Cidade:</p>
+              <p>{{ adress.city }}</p>
+            </div>
+          </div>
+        </form>
+      </mat-step>
+
+      <mat-step label="Dependente">
+        <form [formGroup]="userForm" class="mt-2">
+          <div class="row mt-4">
+          <ng-container formArrayName="dependentsList">
+          <ng-container>
+              <div class="lesson-form-row m-2">
+                <div class="row" *ngFor="let dependent of userSelected.dependentsList">
+                  <div class="col-12 col-md-3 m-2">
+                    <p class="title">Nome:</p>
+                    <p>{{ dependent.name }}</p>
+                  </div>
+                  <div class="col-12 col-md-3 m-2">
+                    <p class="title">Idade:</p>
+                    <p>{{ dependent.age + ' anos' }}</p>
+                  </div>
+                  <div class="col-12 col-md-3 m-2">
+                    <p class="title">Documento:</p>
+                    <p>{{ dependent.document | cpfFormat }}</p>
+                  </div>
+                </div>
+              </div>
+          </ng-container>
+      </ng-container>
+          </div>
+        </form>
+      </mat-step>
+    </mat-stepper>
+  </ng-container>
+  
+  <ng-container *ngIf="isEditable">
+    <div class="button">
+      <button mat-flat-button class="button-style mx-2" style="background-color: rgb(1, 165, 1);" (click)="this.editUserByIndex(this.selectedIndex, this.getPayload())">Concluído</button>
+      <button mat-flat-button class="button-style" style="background-color: rgb(165, 1, 1);" (click)="this.isEditable = false">Cancelar</button>
+    </div>
+
+    <mat-stepper #stepper>
+      <mat-step >
+        <form [formGroup]="userForm" class="mt-2">
+          <ng-template matStepLabel>Geral</ng-template>
+          <div class="row">
+            <mat-form-field class="col-12 col-md-6">
+              <mat-label>Nome</mat-label>
+              <input matInput formControlName="name" />
+              <mat-error *ngIf="userForm.get('name')?.hasError('required')">
+                O nome é <b>obrigatório!</b>
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field class="col-12 col-md-6">
+              <mat-label>E-mail</mat-label>
+              <input matInput formControlName="email" />
+              <mat-error *ngIf="userForm.get('email')?.hasError('required')">
+                O e-mail é <b>obrigatório!</b>
+              </mat-error>
+              <mat-error *ngIf="userForm.get('email')?.hasError('pattern')">
+                E-mail inválido.
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="row">
+            <mat-form-field class="col-12 col-md-6">
+              <mat-label>País</mat-label>
+              <mat-select formControlName="country" (change)="this.getStates(this.countrySelected)" (selectionChange)="this.getStates(this.countrySelected)">
+                <mat-option *ngFor="let country of countries" [value]="country.nome">{{ country.nome }}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="userForm.get('country')?.hasError('required')">
+                Escolha o país.
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field class="col-12 col-md-6">
+              <mat-label>Estado</mat-label>
+              <mat-select formControlName="state">
+                <mat-option *ngFor="let state of states" [value]="state.name">{{ state.name }}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="userForm.get('state')?.hasError('required')">
+                Escolha o estado.
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="row">
+            <mat-form-field class="col-12 col-md-4">
+              <mat-label>Estado civíl</mat-label>
+              <mat-select formControlName="maritalStatus">
+                <mat-option [value]="'SINGLE'">Solteiro(a)</mat-option>
+                <mat-option [value]="'MARRIED'">Casado(a)</mat-option>
+                <mat-option [value]="'DIVORCED'">Divorciado(a)</mat-option>
+              </mat-select>
+              <mat-error *ngIf="userForm.get('maritalStatus')?.hasError('required')">
+                Escolha o estado cívil.
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field class="col-12 col-md-4">
+              <mat-label>Renda Mensal</mat-label>
+              <input
+                matInput
+                formControlName="monthlyIncome"
+                mask="separator.2"
+                prefix="R$ "
+                [decimalMarker]="','"
+                [thousandSeparator]="'.'"/>
+              <mat-error *ngIf="userForm.get('monthlyIncome')?.hasError('required')">
+                A renda mensal é <b>obrigatória!</b>
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field class="col-12 col-md-4">
+              <mat-label>Data de nascimento</mat-label>
+              <input 
+                matInput  
+                formControlName="birthDate">
+              <mat-hint>DD/MM/YYYY</mat-hint>
+              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+              <input 
+                (dateInput)="dateEvent($event)" 
+                matInput 
+                [matDatepicker]="picker" 
+                class="d-none">
+              <mat-error *ngIf="userForm.get('birthDate')?.hasError('required')">
+                A Data de nascimento é <b>obrigatória!</b>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </form>
+      </mat-step>
+      <mat-step label="Contato">
+        <form [formGroup]="userForm">
+
+          <h4>Telefones:</h4>
+          <div class="row">
+            <mat-form-field class="col-12 col-md-4">
+              <mat-label>Residencial</mat-label>
+              <input
+                matInput
+                formControlName="residentialNumber"
+                mask="+00 (00) 00000-0000"
+                />
+            </mat-form-field>
+            <mat-form-field class="col-12 col-md-4">
+              <mat-label>Celular</mat-label>
+              <input
+                matInput
+                formControlName="number"
+                mask="+00 (00) 00000-0000"
+                />
+                <mat-error *ngIf="userForm.get('number')?.hasError('required')">
+                  O número de celular é <b>obrigatório!</b>
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field class="col-12 col-md-4">
+              <mat-label>Emergencial</mat-label>
+              <input
+                matInput
+                formControlName="emergencyNumber"
+                mask="+00 (00) 00000-0000"
+                />
+            </mat-form-field>
+          </div>
+
+          <h4>Endereços:</h4>
+          <div class="row">
+            <mat-form-field class="col-6 col-md-2">
+              <mat-label>Tipo</mat-label>
+              <input matInput value="Residencial" formControlName="typeAdress1" />
+            </mat-form-field>
+            <mat-form-field class="col-6 col-md-2">
+              <mat-label>Rua</mat-label>
+              <input matInput formControlName="street1" />
+              <mat-error *ngIf="userForm.get('street1')?.hasError('required')">
+                Informe a rua.
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field class="col-6 col-md-2">
+              <mat-label>Complemento</mat-label>
+              <input matInput formControlName="complement1" />
+              <mat-error *ngIf="userForm.get('complement1')?.hasError('required')">
+                Informe o complemento.
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field class="col-6 col-md-2">
+              <mat-label>País</mat-label>
+              <input matInput formControlName="countryAdress1" />
+              <mat-error *ngIf="userForm.get('countryAdress1')?.hasError('required')">
+                Informe o País.
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field class="col-6 col-md-2">
+              <mat-label>Estado</mat-label>
+              <input matInput formControlName="stateAdress1" />
+              <mat-error *ngIf="userForm.get('stateAdress1')?.hasError('required')">
+                Informe o estado.
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field class="col-6 col-md-2">
+              <mat-label>Cidade</mat-label>
+              <input matInput formControlName="city1" />
+              <mat-error *ngIf="userForm.get('city1')?.hasError('required')">
+                Informe a cidade.
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="row">
+            <mat-form-field class="col-6 col-md-2">
+              <mat-label>Tipo</mat-label>
+              <input matInput value="Trabalho" formControlName="typeAdress2" />
+            </mat-form-field>
+            <mat-form-field class="col-6 col-md-2">
+              <mat-label>Rua</mat-label>
+              <input matInput formControlName="street2" />
+            </mat-form-field>
+            <mat-form-field class="col-6 col-md-2">
+              <mat-label>Complemento</mat-label>
+              <input matInput formControlName="complement2" />
+            </mat-form-field>
+            <mat-form-field class="col-6 col-md-2">
+              <mat-label>País</mat-label>
+              <input matInput formControlName="countryAdress2" />
+            </mat-form-field>
+            <mat-form-field class="col-6 col-md-2">
+              <mat-label>Estado</mat-label>
+              <input matInput formControlName="stateAdress2" />
+            </mat-form-field>
+            <mat-form-field class="col-6 col-md-2">
+              <mat-label>Cidade</mat-label>
+              <input matInput formControlName="city2" />
+            </mat-form-field>
+          </div>
+
+          <div class="row">
+            <mat-form-field class="col-6 col-md-2">
+              <mat-label>Tipo</mat-label>
+              <input matInput value="Alternativo" formControlName="typeAdress3" />
+            </mat-form-field>
+            <mat-form-field class="col-6 col-md-2">
+              <mat-label>Rua</mat-label>
+              <input matInput formControlName="street3" />
+            </mat-form-field>
+            <mat-form-field class="col-6 col-md-2">
+              <mat-label>Complemento</mat-label>
+              <input matInput formControlName="complement3" />
+            </mat-form-field>
+            <mat-form-field class="col-6 col-md-2">
+              <mat-label>País</mat-label>
+              <input matInput formControlName="countryAdress3" />
+            </mat-form-field>
+            <mat-form-field class="col-6 col-md-2">
+              <mat-label>Estado</mat-label>
+              <input matInput formControlName="stateAdress3" />
+            </mat-form-field>
+            <mat-form-field class="col-6 col-md-2">
+              <mat-label>Cidade</mat-label>
+              <input matInput formControlName="city3" />
+            </mat-form-field>
+          </div>
+        </form>
+      </mat-step>
+      
+      <mat-step label="Dependente">
+        <form [formGroup]="userForm" class="mt-2">
+          <button mat-flat-button (click)="addDependentsGroup()">Novo dependente</button>
+          <div class="row mt-4">
+          <ng-container formArrayName="dependentsList">
+          <ng-container *ngFor="let dependentsForm of dependentsList.controls; let i = index">
+              <div class="lesson-form-row" [formGroup]="dependentsForm">
+                <div class="row">
+                  <mat-form-field class="col-12 col-md-3">
+                    <mat-label>Nome</mat-label>
+                    <input matInput formControlName="name" />
+                    <mat-error *ngIf="dependentsForm.get('name')?.hasError('required')">
+                      Informe o nome do dependente.
+                    </mat-error>
+                  </mat-form-field>
+                  <mat-form-field class="col-12 col-md-3">
+                    <mat-label>Idade</mat-label>
+                    <input matInput formControlName="age" type="number" [min]="1"/>
+                    <mat-error *ngIf="dependentsForm.get('age')?.hasError('required')">
+                      Informe a idade do dependente.
+                    </mat-error>
+                    <mat-error *ngIf="dependentsForm.get('age')?.hasError('min')">
+                      A idade mínima é de 1 ano.
+                    </mat-error>
+                  </mat-form-field>
+                  <mat-form-field class="col-12 col-md-3">
+                    <mat-label>Documento</mat-label>
+                    <input
+                      matInput
+                      formControlName="document"
+                      mask="00.000-000"/>
+                    <mat-error *ngIf="dependentsForm.get('document')?.hasError('required')">
+                      Informe o RG do dependente.
+                    </mat-error>
+                  </mat-form-field>
+                  <button mat-fab (click)="deleteDependent(i)" class="col-12 col-md-3 mx-2">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+          </ng-container>
+      </ng-container>
+          </div>
+        </form>
+      </mat-step>
+    </mat-stepper>
+  </ng-container>
+</div>

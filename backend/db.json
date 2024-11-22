@@ -1,0 +1,138 @@
+{
+  "users": [
+    {
+      "name": "Fulano",
+      "email": "fulano@hotmail.com",
+      "country": "Brazil",
+      "state": "Santa Catarina",
+      "maritalStatus": "SINGLE",
+      "monthlyIncome": 5000,
+      "birthDate": "25/02/1991",
+      "phoneList": [
+        {
+          "type": "RESIDENTIAL",
+          "areaCode": "11",
+          "internationalCode": "+55",
+          "number": "1234-5678"
+        },
+        {
+          "type": "MOBILE",
+          "areaCode": "11",
+          "internationalCode": "+55",
+          "number": "91111-2222"
+        },
+        {
+          "type": "EMERGENCY",
+          "areaCode": "11",
+          "internationalCode": "+55",
+          "number": "93333-4444"
+        }
+      ],
+      "addressList": [
+        {
+          "type": "RESIDENTIAL",
+          "street": "Rua de Tal",
+          "complement": "Próximo ao parque",
+          "country": "Brazil",
+          "state": "São Paulo",
+          "city": "Ribeirão Preto"
+        },
+        {
+          "type": "WORK",
+          "street": "Avenida de Tal",
+          "complement": "Próximo ao centro comercial",
+          "country": "Brazil",
+          "state": "São Paulo",
+          "city": "Santos"
+        },
+        {
+          "type": "ALTERNATIVE",
+          "street": "Estrada de Tal",
+          "complement": "Próximo ao shopping",
+          "country": "Brazil",
+          "state": "São Paulo",
+          "city": "São Carlos"
+        }
+      ],
+      "dependentsList": [
+        {
+          "name": "Fulaninho",
+          "age": 12,
+          "document": 22011944867
+        },
+        {
+          "name": "Fulaninha",
+          "age": 9,
+          "document": 99988877766
+        },
+        {
+          "name": "Fulaninho filho",
+          "age": 15,
+          "document": "10111111"
+        }
+      ]
+    },
+    {
+      "name": "Laura",
+      "email": "laura@hotmail.com",
+      "country": "Brazil",
+      "state": "São Paulo",
+      "maritalStatus": "MARRIED",
+      "monthlyIncome": 6000,
+      "birthDate": "12/12/1994",
+      "phoneList": [
+        {
+          "type": "EMERGENCY",
+          "areaCode": "11",
+          "internationalCode": "+55",
+          "number": "93333-7777"
+        }
+      ],
+      "addressList": [
+        {
+          "type": "WORK",
+          "street": "Avenida de Tal",
+          "complement": "Próximo ao centro comercial",
+          "country": "Brazil",
+          "state": "São Paulo",
+          "city": "Santos"
+        }
+      ],
+      "dependentsList": [
+        {
+          "name": "Fulaninho",
+          "age": 5,
+          "document": 22011944800
+        }
+      ]
+    },
+    {
+      "name": "Marcos",
+      "email": "marcos@hotmail.com",
+      "country": "Brazil",
+      "state": "São Paulo",
+      "maritalStatus": "DIVORCED",
+      "monthlyIncome": 7000,
+      "birthDate": "11/11/1991",
+      "phoneList": [
+        {
+          "type": "MOBILE",
+          "areaCode": "11",
+          "internationalCode": "+55",
+          "number": "91111-7777"
+        }
+      ],
+      "addressList": [
+        {
+          "type": "ALTERNATIVE",
+          "street": "Estrada de Tal",
+          "complement": "Próximo ao shopping",
+          "country": "Brazil",
+          "state": "São Paulo",
+          "city": "São Carlos"
+        }
+      ],
+      "dependentsList": []
+    }
+  ]
+}
